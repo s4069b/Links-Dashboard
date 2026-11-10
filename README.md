@@ -27,5 +27,6 @@ Commit the contents of this folder to your GitHub repository and connect the rep
 The three link collections each contain one `Example link` pointing to `https://example.com/`. The Notes section contains one example note. Replace or delete these in PagesCMS.
 
 ## Preview
+Here is a screenshot of a real usage situation:
 
 ![Dashboard screenshot](media/eg.png)
