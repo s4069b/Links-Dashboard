@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7fa">
+  <meta name="description" content="Quick access to useful tools, resources and information.">
+  <title>Dashboard</title>
+  <link rel="icon" href="/favicon.ico">
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('dashboard-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+        else document.documentElement.dataset.theme = 'dark';
+      } catch (_) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --brand: #18364b;
+      --accent: #38a9e8;
+      --page: #f4f7fa;
+      --surface: #ffffff;
+      --ink: #1c2b36;
+      --muted: #687783;
+      --line: #e1e7eb;
+      --line-hover: rgba(22,139,210,.55);
+      --shadow: 0 8px 24px rgba(22,43,58,.055);
+      --shadow-hover: 0 14px 30px rgba(22,43,58,.11);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --accent: #f28c28;
+      --page: #101d2b;
+      --surface: #192b3d;
+      --ink: #f1f5f9;
+      --muted: #aab8c5;
+      --line: rgba(180,205,225,.16);
+      --line-hover: rgba(22,139,210,.7);
+      --shadow: 0 9px 28px rgba(0,0,0,.18);
+      --shadow-hover: 0 15px 34px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; scroll-behavior: smooth; }
+    body {
+      height: 100vh; height: 100dvh; margin: 0; padding: 0 24px;
+      overflow: hidden; background: var(--page); color: var(--ink);
+      font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 400; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+      transition: background .2s ease, color .2s ease;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page { position: relative; display: flex; flex-direction: column; width: min(100%, 1000px); height: 100%; min-height: 0; margin: 0 auto; }
+    .topbar { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 0 16px; border-bottom: 1px solid var(--line); background: var(--page); }
+    .scroll-content { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 27px 0 30px; }
+    .brand { display: flex; align-items: center; min-width: 0; }
+    .brand img { display: block; max-width: min(260px, 58vw); max-height: 72px; width: auto; height: auto; object-fit: contain; object-position: left center; }
+    .brand-fallback { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--brand); color: white; font-size: 1.15rem; font-weight: 600; letter-spacing: -.04em; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    nav { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+    nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-size: .74rem; font-weight: 500; box-shadow: var(--shadow); transition: border-color .18s ease, background .18s ease, transform .18s ease; white-space: nowrap; }
+    nav a:hover { border-color: var(--line-hover); background: color-mix(in srgb, var(--accent) 10%, var(--surface)); transform: translateY(-1px); }
+    .theme-toggle {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px;
+      padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px;
+      background: var(--surface); color: var(--ink); font: 500 .76rem "Montserrat", sans-serif;
+      cursor: pointer; box-shadow: var(--shadow); transition: border-color .18s ease, background .18s ease;
+      white-space: nowrap;
+    }
+    .theme-toggle:hover { border-color: var(--line-hover); }
+    .theme-icon { color: var(--accent); font-size: 1rem; line-height: 1; }
+    .intro { margin: 0 0 38px; color: var(--muted); font-size: .96rem; font-weight: 300; line-height: 1.7; }
+    .section { margin: 0 0 42px; scroll-margin-top: 18px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin: 0 0 17px; }
+    h1, h2, h3, p { overflow-wrap: anywhere; }
+    h1 { margin: 0; font-size: clamp(1.45rem, 3vw, 1.8rem); font-weight: 500; letter-spacing: -.035em; }
+    h2 { margin: 0; font-size: 1.35rem; font-weight: 500; letter-spacing: -.03em; }
+    .section-description { margin: 6px 0 0; color: var(--muted); font-size: .83rem; font-weight: 300; line-height: 1.55; }
+    .frequent-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 15px; }
+    /* Frequently used links borrow the roomy, outlined button-card treatment from blencowes.net. */
+    .frequent-card {
+      position: relative; display: flex; min-height: 116px; flex-direction: column; align-items: flex-start;
+      padding: 20px 21px 18px; overflow: hidden; border: 1px solid var(--line); border-radius: 15px;
+      background: var(--surface); color: inherit; box-shadow: var(--shadow);
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+    .frequent-card::before { position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--accent); content: ""; opacity: 0; transition: opacity .18s ease; }
+    .frequent-card:hover { transform: translateY(-2px); border-color: var(--line-hover); box-shadow: var(--shadow-hover); }
+    .frequent-card:hover::before, .frequent-card:focus-visible::before { opacity: 1; }
+    .card-heading { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; }
+    .card-title { color: var(--brand); font-size: 1rem; font-weight: 500; line-height: 1.4; letter-spacing: -.02em; }
+    html[data-theme="dark"] .card-title { color: var(--ink); }
+    .card-icon { display: inline-grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border-radius: 9px; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); font-size: .76rem; font-weight: 600; }
+    .card-arrow { flex: 0 0 auto; margin-left: auto; color: var(--accent); font-size: 1.15rem; line-height: 1; transition: transform .18s ease; }
+    .frequent-card:hover .card-arrow { transform: translate(2px,-2px); }
+    .card-desc { margin-top: 8px; color: var(--muted); font-size: .79rem; font-weight: 300; line-height: 1.55; }
+    /* Secondary frequently-used links: compact button cards, half the main-card width and height. */
+    .frequent-text-links { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .frequent-text-link {
+      display: flex; min-width: 0; min-height: 58px; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px;
+      background: var(--surface); color: var(--ink); font-size: .78rem; font-weight: 500; line-height: 1.35;
+      box-shadow: var(--shadow); transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
+    }
+    .frequent-text-copy { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
+    .frequent-text-title { font-weight: 500; }
+    .frequent-text-desc { color: var(--muted); font-size: .68rem; font-weight: 300; line-height: 1.35; }
+    .frequent-text-link::after { content: "↗"; flex: 0 0 auto; color: var(--accent); font-size: .9rem; }
+    .frequent-text-link:hover { transform: translateY(-2px); border-color: var(--line-hover); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); box-shadow: var(--shadow-hover); }
+    .other-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 28px; border-top: 1px solid var(--line); }
+    .other-link { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 0; padding: 13px 3px; border-bottom: 1px solid var(--line); }
+    .other-link:hover .other-title { color: var(--accent); }
+    .other-copy { min-width: 0; }
+    .other-title { display: block; color: var(--brand); font-size: .87rem; font-weight: 500; line-height: 1.4; transition: color .15s ease; }
+    html[data-theme="dark"] .other-title { color: var(--ink); }
+    .other-desc { display: block; margin-top: 3px; color: var(--muted); font-size: .73rem; line-height: 1.4; }
+    .other-arrow { color: var(--accent); font-size: 1rem; }
+    .notes-panel { padding: 22px 24px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); }
+    .notes-list { display: grid; gap: 13px; margin: 0; padding: 0; list-style: none; }
+    .note { padding: 0 0 13px 15px; border-bottom: 1px solid var(--line); border-left: 3px solid var(--accent); }
+    .note:last-child { padding-bottom: 0; border-bottom: 0; }
+    .note-title { margin: 0 0 4px; font-size: .88rem; font-weight: 600; }
+    .note-body { margin: 0; color: var(--muted); font-size: .83rem; line-height: 1.6; white-space: pre-line; }
+    .empty { color: var(--muted); font-size: .86rem; }
+    .load-error { color: #a34d35; font-size: .82rem; }
+    .footer { flex: 0 0 auto; padding: 15px 0 18px; border-top: 1px solid var(--line); background: var(--page); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 15px; color: var(--muted); font-size: .7rem; }
+    .footer a { color: var(--brand); font-weight: 600; }
+    html[data-theme="dark"] .footer a { color: var(--ink); }
+    .footer a:hover { color: var(--accent); }
+    a:focus-visible, button:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent); outline-offset: 3px; }
+    @media (max-width: 820px) { .frequent-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 760px) {
+      body { padding: 0 17px; }
+      .topbar { align-items: flex-start; flex-direction: column; gap: 12px; padding: 14px 0 13px; }
+      .top-actions { width: 100%; align-items: center; justify-content: space-between; gap: 8px; }
+      nav { justify-content: flex-start; gap: 6px; }
+      nav a { min-height: 34px; padding: 7px 9px; font-size: .68rem; }
+      .scroll-content { padding-top: 22px; }
+      .intro { margin-bottom: 30px; }
+      .frequent-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px; }
+      .frequent-text-links { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; }
+      .frequent-text-link { min-height: 54px; padding: 10px 11px; font-size: .73rem; }
+      .frequent-card { min-height: 90px; padding: 17px 18px; }
+      .other-list { grid-template-columns: 1fr; }
+      .notes-panel { padding: 18px; }
+      .footer-inner { align-items: center; }
+    }
+    @media (max-width: 480px) {
+      .top-actions { align-items: flex-start; flex-direction: column-reverse; }
+      nav { width: 100%; }
+      nav a { flex: 1 1 auto; }
+      .brand img { max-width: 175px; max-height: 48px; }
+      .theme-toggle { min-height: 34px; padding: 6px 10px; font-size: .68rem; }
+      .frequent-grid { grid-template-columns: 1fr; }
+      .frequent-text-links { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+      .frequent-text-link { min-height: 50px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; gap: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Dashboard home" id="brand-area"><span class="brand-fallback" aria-hidden="true">D</span></a>
+      <div class="top-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="theme-icon" id="theme-icon" aria-hidden="true">☾</span><span id="theme-label">Dark mode</span>
+        </button>
+        <nav aria-label="Page navigation">
+          <a href="#frequently-used">Frequently Used</a>
+          <a href="#other-links">Other links</a>
+          <a href="#notes">Notes</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="scroll-content" id="page-content">
+    <p class="intro">Quick access to the tools, resources and information.</p>
+
+    <section class="section" id="frequently-used" aria-labelledby="frequently-used-title">
+      <div class="section-heading"><div><h1 id="frequently-used-title">Frequently Used</h1><p class="section-description">The everyday tools and services.</p></div></div>
+      <div class="frequent-grid" id="home-links"><p class="empty">Loading links…</p></div>
+      <div class="frequent-text-links" id="frequent-text-links" aria-label="More frequently used links"><span class="empty">Loading additional links…</span></div>
+    </section>
+
+    <section class="section" id="other-links" aria-labelledby="other-title">
+      <div class="section-heading"><div><h2 id="other-title">Other links</h2><p class="section-description">Handy resources used less often.</p></div></div>
+      <div class="other-list" id="other-link-list"><p class="empty">Loading links…</p></div>
+    </section>
+
+    <section class="section" id="notes" aria-labelledby="notes-title">
+      <div class="section-heading"><div><h2 id="notes-title">Notes</h2><p class="section-description" id="notes-intro">Useful reminders and information.</p></div></div>
+      <div class="notes-panel"><ul class="notes-list" id="notes-list"><li class="empty">Loading notes…</li></ul></div>
+    </section>
+
+    </div>
+    <footer class="footer"><div class="footer-inner"><span id="footer-text"></span><a href="https://app.pagescms.org/" target="_blank" rel="noopener noreferrer">Edit this page in PagesCMS ↗</a></div></footer>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const root = document.documentElement;
+    const themeToggle = $('theme-toggle');
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      root.dataset.theme = dark ? 'dark' : 'light';
+      $('theme-label').textContent = dark ? 'Light mode' : 'Dark mode';
+      $('theme-icon').textContent = dark ? '☀' : '☾';
+      themeToggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      themeToggle.setAttribute('aria-pressed', String(dark));
+      document.querySelector('meta[name="theme-color"]').content = dark ? getComputedStyle(root).getPropertyValue('--page').trim() : getComputedStyle(root).getPropertyValue('--page').trim();
+      updateLogo();
+    }
+    themeToggle.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      try { localStorage.setItem('dashboard-theme', next); } catch (_) {}
+    });
+
+    let branding = {};
+    function updateLogo() {
+      const dark = root.dataset.theme === 'dark';
+      const preferred = dark ? branding.logoDark : branding.logoLight;
+      const alternate = dark ? branding.logoLight : branding.logoDark;
+      const logo = preferred || alternate;
+      const area = $('brand-area');
+      area.replaceChildren();
+      if (logo) {
+        const img = document.createElement('img');
+        img.src = logo; img.alt = branding.logoAltText || 'Dashboard logo';
+        area.append(img);
+      } else {
+        const mark = document.createElement('span');
+        mark.className = 'brand-fallback'; mark.textContent = 'D'; mark.setAttribute('aria-hidden', 'true');
+        area.append(mark);
+      }
+    }
+    function applyBranding(data) {
+      branding = data || {};
+      $('footer-text').textContent = branding.footerText || '';
+      const styles = getComputedStyle(root);
+      const vars = {
+        '--brand': branding.primaryColor,
+        '--accent': root.dataset.theme === 'dark' ? (branding.darkAccentColor || branding.accentColor) : (branding.lightAccentColor || branding.accentColor),
+        '--page': root.dataset.theme === 'dark' ? branding.darkBackground : branding.lightBackground,
+        '--surface': root.dataset.theme === 'dark' ? branding.darkSurface : branding.lightSurface,
+        '--ink': root.dataset.theme === 'dark' ? branding.darkText : branding.lightText
+      };
+      Object.entries(vars).forEach(([key,value]) => { if (/^#[0-9a-fA-F]{6}$/.test(value || '')) root.style.setProperty(key, value); });
+      updateLogo();
+      document.querySelector('meta[name="theme-color"]').content = getComputedStyle(root).getPropertyValue('--page').trim();
+    }
+    const originalApplyTheme = applyTheme;
+    applyTheme = function(theme) { originalApplyTheme(theme); if (branding) applyBranding(branding); };
+
+    function makeFrequentCard(link) {
+      const a = document.createElement('a');
+      a.className = 'frequent-card'; a.href = link.url || '#';
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      const heading = document.createElement('span'); heading.className = 'card-heading';
+      if (link.icon) {
+        const icon = document.createElement('span'); icon.className = 'card-icon';
+        icon.textContent = String(link.icon).trim().slice(0,2); heading.append(icon);
+      }
+      const title = document.createElement('span'); title.className = 'card-title'; title.textContent = link.title || 'Untitled link'; heading.append(title);
+      const arrow = document.createElement('span'); arrow.className = 'card-arrow'; arrow.setAttribute('aria-hidden','true'); arrow.textContent = '↗'; heading.append(arrow);
+      a.append(heading);
+      if (link.description) { const desc = document.createElement('span'); desc.className = 'card-desc'; desc.textContent = link.description; a.append(desc); }
+      return a;
+    }
+    function makeFrequentTextLink(link) {
+      const a = document.createElement('a');
+      a.className = 'frequent-text-link'; a.href = link.url || '#';
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      const copy = document.createElement('span'); copy.className = 'frequent-text-copy';
+      const title = document.createElement('span'); title.className = 'frequent-text-title'; title.textContent = link.title || 'Untitled link'; copy.append(title);
+      if (link.description) { const desc = document.createElement('span'); desc.className = 'frequent-text-desc'; desc.textContent = link.description; copy.append(desc); }
+      a.append(copy);
+      return a;
+    }
+    function makeOtherLink(link) {
+      const a = document.createElement('a'); a.className = 'other-link'; a.href = link.url || '#';
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      const copy = document.createElement('span'); copy.className = 'other-copy';
+      const title = document.createElement('span'); title.className = 'other-title'; title.textContent = link.title || 'Untitled link'; copy.append(title);
+      if (link.description) { const desc = document.createElement('span'); desc.className = 'other-desc'; desc.textContent = link.description; copy.append(desc); }
+      const arrow = document.createElement('span'); arrow.className = 'other-arrow'; arrow.setAttribute('aria-hidden','true'); arrow.textContent = '↗';
+      a.append(copy,arrow); return a;
+    }
+    async function loadLinks(path, targetId, factory, emptyMessage) {
+      const target = $(targetId);
+      try {
+        const response = await fetch(path, {cache:'no-store'});
+        if (!response.ok) throw new Error('Could not load ' + path);
+        const items = await response.json(); target.replaceChildren();
+        if (!Array.isArray(items) || !items.length) { const empty = document.createElement('p'); empty.className='empty'; empty.textContent=emptyMessage; target.append(empty); return; }
+        items.forEach(item => target.append(factory(item)));
+      } catch (error) {
+        target.replaceChildren(); const message=document.createElement('p'); message.className='load-error';
+        message.textContent='This section could not be loaded. Please check the dashboard content files.'; target.append(message); console.error(error);
+      }
+    }
+    async function loadNotes() {
+      const list = $('notes-list');
+      try {
+        const response = await fetch('/data/notes.json',{cache:'no-store'}); if(!response.ok) throw new Error('Could not load notes');
+        const data = await response.json(); if(data.heading) $('notes-intro').textContent=data.heading;
+        list.replaceChildren();
+        if(!Array.isArray(data.notes) || !data.notes.length) { const empty=document.createElement('li'); empty.className='empty'; empty.textContent='No notes yet. Add one in PagesCMS when you have something to keep in view.'; list.append(empty); return; }
+        data.notes.forEach(note => {
+          const item=document.createElement('li'); item.className='note';
+          if(note.title) { const title=document.createElement('h3'); title.className='note-title'; title.textContent=note.title; item.append(title); }
+          const body=document.createElement('p'); body.className='note-body'; body.textContent=note.body || ''; item.append(body); list.append(item);
+        });
+      } catch(error) { list.replaceChildren(); const item=document.createElement('li'); item.className='load-error'; item.textContent='Notes could not be loaded. Please check the dashboard content files.'; list.append(item); console.error(error); }
+    }
+    async function init() {
+      try {
+        const response = await fetch('/data/site.json',{cache:'no-store'});
+        if (response.ok) applyBranding(await response.json()); else updateLogo();
+      } catch (_) { updateLogo(); }
+      applyTheme(root.dataset.theme || 'dark');
+      await Promise.all([
+        loadLinks('/data/home-links.json','home-links',makeFrequentCard,'No frequently used links have been added yet.'),
+        loadLinks('/data/frequent-text-links.json','frequent-text-links',makeFrequentTextLink,'No additional text links have been added yet.'),
+        loadLinks('/data/other-links.json','other-link-list',makeOtherLink,'No other links have been added yet.'),
+        loadNotes()
+      ]);
+    }
+    init();
+  </script>
+</body>
+</html>

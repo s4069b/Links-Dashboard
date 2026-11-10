@@ -1,0 +1,165 @@
+media:
+  input: media
+  output: /media
+  categories: [image]
+  extensions: [png, jpg, jpeg, webp, svg]
+
+content:
+  - name: home_links
+    label: Frequently Used Links - A list
+    type: file
+    path: data/home-links.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: Link name
+        type: string
+        required: true
+      - name: url
+        label: Web address
+        type: string
+        required: true
+      - name: description
+        label: Short description
+        type: string
+      - name: icon
+        label: Short icon text (optional)
+        type: string
+        description: Optional 1–2 characters displayed in the button. Leave blank for no icon.
+
+
+  - name: frequent_text_links
+    label: Frequently Used Links - B list
+    type: file
+    path: data/frequent-text-links.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: Link name
+        type: string
+        required: true
+      - name: url
+        label: Web address
+        type: string
+        required: true
+      - name: description
+        label: Short description
+        type: string
+
+
+  - name: other_links
+    label: Other links
+    type: file
+    path: data/other-links.json
+    format: json
+    list: true
+    fields:
+      - name: title
+        label: Link name
+        type: string
+        required: true
+      - name: url
+        label: Web address
+        type: string
+        required: true
+      - name: description
+        label: Short description
+        type: string
+
+
+  - name: notes
+    label: Notes
+    type: file
+    path: data/notes.json
+    format: json
+    fields:
+      - name: heading
+        label: Introductory text
+        type: text
+      - name: notes
+        label: Notes
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: title
+            label: Note title
+            type: string
+          - name: body
+            label: Note text
+            type: text
+
+  - name: site_settings
+    label: Branding & appearance
+    type: file
+    path: data/site.json
+    format: json
+    fields:
+      - name: logoLight
+        label: Header logo for light mode
+        type: image
+        options:
+          path: media
+          extensions: [png, jpg, jpeg, webp, svg]
+      - name: logoDark
+        label: Header logo for dark mode
+        type: image
+        options:
+          path: media
+          extensions: [png, jpg, jpeg, webp, svg]
+      - name: logoAltText
+        label: Header logo description
+        type: string
+        description: Accessible description for the header logo.
+      - name: footerText
+        label: Footer text
+        type: string
+        description: Text displayed on the left side of the page footer.
+      - name: primaryColor
+        label: Primary brand colour (HEX)
+        type: string
+        description: Used for headings, links and the main frequently-used buttons. Enter a HEX value such as #18364b.
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: darkAccentColor
+        label: Dark mode accent colour (HEX)
+        type: string
+        description: Used for highlights and button details in dark mode. Initial default is orange (#f28c28); change it to suit your organisation.
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: lightAccentColor
+        label: Light mode accent colour (HEX)
+        type: string
+        description: Used for highlights and button details in light mode. Starts with sky blue (#38a9e8).
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: lightBackground
+        label: Light mode page background (HEX)
+        type: string
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: lightSurface
+        label: Light mode cards (HEX)
+        type: string
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: lightText
+        label: Light mode text (HEX)
+        type: string
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: darkBackground
+        label: Dark mode page background (HEX)
+        type: string
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: darkSurface
+        label: Dark mode cards (HEX)
+        type: string
+        pattern: "^#[0-9a-fA-F]{6}$"
+      - name: darkText
+        label: Dark mode text (HEX)
+        type: string
+        pattern: "^#[0-9a-fA-F]{6}$"
+
+
+settings:
+  content:
+    merge: true
