@@ -1,0 +1,15 @@
+{
+  "logoLight": "",
+  "logoDark": "",
+  "primaryColor": "#36536b",
+  "lightAccentColor": "#2878a8",
+  "darkAccentColor": "#8ab4d6",
+  "lightBackground": "#f4f7fa",
+  "lightSurface": "#ffffff",
+  "lightText": "#1c2b36",
+  "darkBackground": "#101d2b",
+  "darkSurface": "#192b3d",
+  "darkText": "#f1f5f9",
+  "logoAltText": "Organisation logo",
+  "footerText": "Your organisation \u00b7 Dashboard"
+}
